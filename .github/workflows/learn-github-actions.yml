@@ -1,22 +1,26 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Label issues
 on:
-  # Trigger analysis when pushing in master or pull requests, and when creating
-  # a pull request.
-  push:
-    branches:
-      - master
-  pull_request:
-      types: [opened, synchronize, reopened]
-name: Main Workflow
+  issues:
+    types:
+      - reopened
+      - opened
 jobs:
-  sonarcloud:
+  label_issues:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
-    - uses: actions/checkout@v2
-      with:
-        # Disabling shallow clone is recommended for improving relevancy of reporting
-        fetch-depth: 0
-    - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Label issues
+        uses: andymckay/labeler@e6c4322d0397f3240f0e7e30a33b5c5df2d39e90
+        with:
+          add-labels: "triage"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
